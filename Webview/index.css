@@ -56,12 +56,12 @@ flap-bottom-flip {
 flap-top-flip {
   display: none;
   transform-origin: 100% 100%;
-  animation: flip-top-down 300ms ease-in;
+  animation: flip-top-down var(--anim) ease-in;
 }
 flap-bottom-flip {
   display: none;
   transform-origin: 100% 0%;
-  animation: flip-bottom-down 150ms ease-out;
+  animation: flip-bottom-down var(--anim) ease-out;
 }
 
 flap-top > n,
