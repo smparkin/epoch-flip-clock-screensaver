@@ -45,7 +45,7 @@ function flipDigitTo(digit, currentVal, updatedVal, i) {
   setTimeout(function() {
     bottomFlapNum.innerHTML = updatedVal;
     bottomFlapFlip.style.display = 'none';
-  }, [10, 11, 12].includes(i) ? 45 : (10-i) * 450);
+  }, [10, 11, 12].includes(i) ? 45 : (10-i) * 425);
 
   digit.setAttribute('current-val', updatedVal);
 }

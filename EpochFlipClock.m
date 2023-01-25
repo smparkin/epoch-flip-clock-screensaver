@@ -19,9 +19,11 @@ static NSString * const epochFlipClockModule = @"com.epochflipclock";
     // Webview
     NSURL* indexHTMLDocumentURL = [NSURL URLWithString:[[[NSURL fileURLWithPath:[[NSBundle bundleForClass:self.class].resourcePath stringByAppendingString:@"/Webview/index.html"] isDirectory:NO] description] stringByAppendingFormat:@"?screensaver=1%@", self.isPreview ? @"&is_preview=1" : @""]];
 
-    WebView* webView = [[WebView alloc] initWithFrame:NSMakeRect(0, 0, frame.size.width, frame.size.height)];
-    webView.drawsBackground = NO; // Avoids a "white flash" just before the index.html file has loaded
-    [webView.mainFrame loadRequest:[NSURLRequest requestWithURL:indexHTMLDocumentURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0]];
+    WKWebView* webView = [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, frame.size.width, frame.size.height)];
+    NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
+    [[webView layer] setBackgroundColor:color.CGColor]; // hacky af but it works,
+    [webView setValue:@(YES) forKey:@"drawsTransparentBackground"]; // prevents a white flash while loading the web view
+    [webView loadRequest:[NSURLRequest requestWithURL:indexHTMLDocumentURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0]];
     
     // Show on screens based on preferences
     NSArray* screens = [NSScreen screens];
@@ -68,9 +70,11 @@ static NSString * const epochFlipClockModule = @"com.epochflipclock";
     ScreenSaverDefaults *defaults;
     defaults = [ScreenSaverDefaults defaultsForModuleWithName:epochFlipClockModule];
     
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    
     if (!configSheet)
     {
-        if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self])
+        if (![bundle loadNibNamed:@"ConfigureSheet" owner:self topLevelObjects:nil])
         {
             NSLog( @"Failed to load configure sheet." );
         }
@@ -104,7 +108,7 @@ static NSString * const epochFlipClockModule = @"com.epochflipclock";
 
 #pragma mark - WebFrameLoadDelegate
 
-- (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame {
+- (void)webView:(WKWebView *)sender didFailLoadWithError:(NSError *)error {
     NSLog(@"%@ error=%@", NSStringFromSelector(_cmd), error);
 }
 
